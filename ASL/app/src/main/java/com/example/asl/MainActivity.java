@@ -91,25 +91,28 @@ public class MainActivity extends AppCompatActivity {
         Intent intent = new Intent(Intent.ACTION_PICK);
         intent.setType("image/*");
 
-        String[] mimeTypes = {"image/jpeg", "image/png"};
+        String[] mimeTypes = {"image/jpg", "image/png"};
         intent.putExtra(Intent.EXTRA_MIME_TYPES, mimeTypes);
 
-        someActivityResultLauncher.launch(intent);
+        getContent.launch(intent);
+
     }
 
-    ActivityResultLauncher<Intent> someActivityResultLauncher = registerForActivityResult(
+    ActivityResultLauncher<Intent> getContent = registerForActivityResult(
             new ActivityResultContracts.StartActivityForResult(),
             new ActivityResultCallback<ActivityResult>() {
                 @Override
                 public void onActivityResult(ActivityResult result) {
                     if (result.getResultCode() == Activity.RESULT_OK) {
-                        // There are no request codes
                         Intent data = result.getData();
-//                                switch (result.getResultCode()) {
-//                                    case REQUEST_CODE:
-                        //data.getData returns the content URI for the selected Image
-                        Uri selectedImage = data.getData();
-                        img.setImageURI(selectedImage);
+                        selectedImage = data.getData();
+
+
+//                        Intent cropper = new Intent(getApplicationContext(), prediction.class);
+//                        cropper.putExtra("data", selectedImage.toString());
+//                        startActivityForResult(cropper, 101);
+
+                        setImage(selectedImage);
                         try {
                             bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), selectedImage);
                         } catch (IOException e) {
