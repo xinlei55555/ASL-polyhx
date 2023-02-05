@@ -1,6 +1,7 @@
 package com.example.asl;
 
 import com.example.asl.ml.CnnAslMnist1;
+import com.example.asl.ml.LiteModelAmericanSignLanguage1;
 
 import androidx.activity.result.ActivityResult;
 import androidx.activity.result.ActivityResultCallback;
@@ -162,7 +163,7 @@ public class MainActivity extends AppCompatActivity {
             e.printStackTrace();
         }
 
-        Bitmap resized = Bitmap.createScaledBitmap(bitmap, 28, 28, true);
+        Bitmap resized = Bitmap.createScaledBitmap(bitmap, 224, 224, true);
         Bitmap gray_resized = toGrayscale(resized);
 
         TensorImage tbuffer = TensorImage.createFrom(TensorImage.fromBitmap(gray_resized), DataType.FLOAT32);
@@ -170,15 +171,25 @@ public class MainActivity extends AppCompatActivity {
 
         ByteBuffer byteBuffer = tbuffer.getBuffer();
 
+//        try {
+//            CnnAslMnist1 model = CnnAslMnist1.newInstance(this);
+//
+//            // Creates inputs for reference.
+//            TensorBuffer inputFeature0 = TensorBuffer.createFixedSize(new int[]{1, 28, 28, 1}, DataType.FLOAT32);
+//            inputFeature0.loadBuffer(byteBuffer);
+//
+//            // Runs model inference and gets result.
+//            CnnAslMnist1.Outputs outputs = model.process(inputFeature0);
         try {
-            CnnAslMnist1 model = CnnAslMnist1.newInstance(this);
+            LiteModelAmericanSignLanguage1 model = LiteModelAmericanSignLanguage1.newInstance(this);
 
             // Creates inputs for reference.
-            TensorBuffer inputFeature0 = TensorBuffer.createFixedSize(new int[]{1, 28, 28, 1}, DataType.FLOAT32);
+            TensorBuffer inputFeature0 = TensorBuffer.createFixedSize(new int[]{1, 224, 224, 3}, DataType.FLOAT32);
             inputFeature0.loadBuffer(byteBuffer);
 
             // Runs model inference and gets result.
-            CnnAslMnist1.Outputs outputs = model.process(inputFeature0);
+            LiteModelAmericanSignLanguage1.Outputs outputs = model.process(inputFeature0);
+
             float[] outputFeature0 = outputs.getOutputFeature0AsTensorBuffer().getFloatArray();
 
             int maxInd = getMaxInd(outputFeature0);
